@@ -4,13 +4,14 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
-        static char[] alpha = "qwertyuiopasdfghjklzxcvbnm".ToCharArray();
+        static char[] alpha = "qwertyuiopasdfghjklzxcvbnm1234567890-='@#~/?".ToCharArray();
         static Random random = new Random();
 
         static void Main(string[] args)
         {
-            Console.WriteLine(encrypt("hello",keyGen()));
-            Console.ReadLine();
+            while (true){
+                Console.WriteLine(encrypt(Console.ReadLine(),keyGen()));
+            }
         }
 
 
@@ -56,5 +57,23 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
             return encrypted;
         }
+
+        static char[] decrypt(string encrypted, char[] key){
+            encrypted.ToCharArray(); 
+
+            char[] decrypted = new char[encrypted.Length];
+            for (int i = 0; i < encrypted.Length; i++)
+            {
+                decrypted[i] = alpha[Array.IndexOf(key,encrypted[i])];
+            }
+
+            return decrypted;
+        }
     }
 }
+
+
+
+
+
+//C:\Users\Umar\Desktop\Projects\Basic-Encryption-System
