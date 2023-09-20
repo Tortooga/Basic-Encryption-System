@@ -4,30 +4,47 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
-        static char[] alpha = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890- ='@#~/?".ToCharArray();
+        static char[] alpha = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890- ,.='@#~/?".ToCharArray();
         static Random random = new Random();
 
         static void Main(string[] args)
         {
-           /* while (true){
-                Console.WriteLine("enter a string of text such that it would be encrypted");
+            while (true){
+                string input = "";
+                char[] key = new char[alpha.Length];
+                Console.WriteLine("For encryption input 'e'. And for decryption input 'd'");
                 input = Console.ReadLine();
-                if (!(input is null)){
-                    Console.WriteLine(encrypt(input,keyGen()));
+                if (input == "d"){
+                    Console.WriteLine("input the key");
+                    key = Console.ReadLine().ToCharArray();
+                    while (input != "/"){
+                        Console.WriteLine("input a string to be decrypted");
+                        input = Console.ReadLine();
+                        Console.WriteLine(decrypt(input.ToCharArray(), key));
+                    }
                 }
-                else {
-                    Console.WriteLine("invalid input");
+            
+                else{
+                    Console.WriteLine("Would you like for a session key to be generated: 'y', or do you have your own key: 'n'");
+                    input = Console.ReadLine();
+                    if (input == "y"){
+                        key = keyGen();
+                        Console.WriteLine("Your key is:");
+                        Console.Write(key);
+                    }
+                    else{
+                        Console.WriteLine("Input your key");
+                        key = Console.ReadLine().ToCharArray();
+                    }
+                    while (input != "/"){
+                        Console.ReadLine();
+                        Console.WriteLine("Input a string to be encrypted");
+                        input = Console.ReadLine();
+                        Console.WriteLine(encrypt(input,key));
+                    }
                 }
-                 
-           }*/
-
-            char[] key = keyGen();
-            char[] message = encrypt("hello",key);
-            Console.WriteLine(message);
-            Console.WriteLine(decrypt(message,key));
-        
+            }
         }
-
 
 
         static char[] keyGen(){
@@ -84,7 +101,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                     fiSeq[i+1] = inSeq[i];
                 }
             }
-            else{
+            /*else{
                 fiSeq[inSeq.Length - 1] = inSeq[0];
 
                 for (int i = 1; i < inSeq.Length; i++)
@@ -92,7 +109,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                     fiSeq[i-1] = inSeq[i];
                 }
             } 
-
+            */
             return fiSeq;
         }
 
