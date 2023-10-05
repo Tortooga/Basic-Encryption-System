@@ -94,9 +94,8 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
         static char[] cycle(char[] inSeq){
             char[] fiSeq = new char[inSeq.Length];
             int jumpConstant = Array.IndexOf(alpha,inSeq[0]);
-            Console.WriteLine(jumpConstant);
-            fiSeq[jumpConstant] = inSeq[0];
 
+            fiSeq[jumpConstant] = inSeq[0];
             if (jumpConstant == 0){
                 jumpConstant = 1;
             }
@@ -105,7 +104,6 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
             {
                 fiSeq[cycleReset(i + jumpConstant)] = inSeq[i];
             }
-            Console.WriteLine(fiSeq);
             return fiSeq;
         }
 
