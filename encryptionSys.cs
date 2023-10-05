@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace encryptionSys // Note: actual namespace depends on the project name.
 {
@@ -9,9 +10,9 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
         static void Main(string[] args)
         {
-            while (true){
-                string input = "";
-                char[] key = new char[alpha.Length];
+            string input = "";
+            char[] key = new char[alpha.Length];
+            while (input != "/"){
                 Console.WriteLine("For encryption input 'e'. And for decryption input 'd'");
                 input = Console.ReadLine();
                 if (input == "d"){
@@ -24,7 +25,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                     }
                 }
             
-                else{
+                else if (input == "e"){
                     Console.WriteLine("Would you like for a session key to be generated: 'y', or do you have your own key: 'n'");
                     input = Console.ReadLine();
                     if (input == "y"){
@@ -84,32 +85,27 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
             for (int i = 0; i < original.Length; i++)
             {
                 encrypted[i] = key[Array.IndexOf(alpha,original[i])];
-                key = cycle(key,true);
+                key = cycle(key);
             }
 
             return encrypted;
         }
 
-        static char[] cycle(char[] inSeq, bool forward){
+        static char[] cycle(char[] inSeq){
             char[] fiSeq = new char[inSeq.Length];
+            int jumpConstant = Array.IndexOf(alpha,inSeq[0]);
+            Console.WriteLine(jumpConstant);
+            fiSeq[jumpConstant] = inSeq[0];
 
-            if (forward){
-                fiSeq[0] = inSeq[inSeq.Length - 1];
-
-                for (int i = 0; i < inSeq.Length - 1; i++)
-                {
-                    fiSeq[i+1] = inSeq[i];
-                }
+            if (jumpConstant == 0){
+                jumpConstant = 1;
             }
-            /*else{
-                fiSeq[inSeq.Length - 1] = inSeq[0];
 
-                for (int i = 1; i < inSeq.Length; i++)
-                {
-                    fiSeq[i-1] = inSeq[i];
-                }
-            } 
-            */
+            for (int i = 1; i < inSeq.Length; i++)
+            {
+                fiSeq[cycleReset(i + jumpConstant)] = inSeq[i];
+            }
+            Console.WriteLine(fiSeq);
             return fiSeq;
         }
 
@@ -119,10 +115,19 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
             for (int i = 0; i < encrypted.Length; i++)
             {
                 decrypted[i] = alpha[Array.IndexOf(key,encrypted[i])];
-                key = cycle(key,true);
+                key = cycle(key);
             }
 
             return decrypted;
+        }
+
+        static int cycleReset(int num){
+            if (num >= alpha.Length){
+                return num - alpha.Length;
+            }
+            else{
+                return num;
+            }
         }
     }
 }
