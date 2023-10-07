@@ -194,5 +194,3 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
 
 
-
-//C:\Users\Umar\Desktop\Projects\Basic-Encryption-System
