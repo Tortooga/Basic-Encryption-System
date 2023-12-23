@@ -88,7 +88,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                 key = cycle(key);
             }
 
-            return encrypted;
+            return salt(encrypted, key);
         }
 
         static char[] cycle(char[] inSeq){
@@ -119,6 +119,25 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
             return decrypted;
         }
 
+        static char[] salt(char[] unsalted, char[] key){
+            int[] scatterMap = scatterMapGen(unsalted.Length, key);
+            char[] salted = new char[scatterMap.Length];
+
+            int realValCount = 0;
+            for (int i = 0; i < scatterMap.Length; i++)
+            {
+                if (scatterMap[i] == 1){
+                    salted[i] = unsalted[realValCount];
+                    realValCount++;
+                }
+                else{
+                    salted[i] = alpha[choose(alpha)];
+                }
+            }
+
+            return salted;
+        }
+
         static int cycleReset(int num){
             if (num >= alpha.Length){
                 return num - alpha.Length;
@@ -127,6 +146,72 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                 return num;
             }
         }
+        
+        static int[] toBin(int num){
+            short bittage;
+
+            if (num == 0){
+                bittage = 1;
+            }
+            else{
+                bittage = (short)(Math.Floor(Math.Log2(num)) + 1);
+            }
+            
+            int[] binval = new int[bittage];
+
+            for (int i = 0; i < bittage; i++)
+            {
+            if (num >= Math.Pow(2,bittage-1-i)){
+                num = num - (int)Math.Pow(2,bittage-1-i);
+                binval[i] = 1;
+            }
+
+            else{
+                binval[i] = 0;
+            }
+            }
+
+            return binval;
+        }
+
+        static int[] scatterMapGen(int UnsaltedLen, char[] key){
+            int[] ScatterMapTemp = new int[UnsaltedLen*5];
+            for (int i = 0; i < UnsaltedLen*5; i++)
+            {
+                ScatterMapTemp[i] = 2;
+            }
+
+            int realValCount = 0;
+            int seedCharIndex = 0;
+            int bitCount  = 0;
+            int subCharBit = 0;
+            while (realValCount < UnsaltedLen){
+
+                if (subCharBit >= toBin(Array.IndexOf(alpha,key[seedCharIndex])).Length){
+                    seedCharIndex++;
+                    subCharBit = 0;
+                }
+
+                ScatterMapTemp[bitCount] = toBin(Array.IndexOf(alpha,key[seedCharIndex]))[subCharBit];
+
+                if (ScatterMapTemp[bitCount] == 1){
+                    realValCount++;
+                }
+
+                bitCount++;
+                subCharBit++;
+            }
+
+            int[] ScatterMap = new int[bitCount];
+            for (int i = 0; i < bitCount; i++)
+            {
+                ScatterMap[i] = ScatterMapTemp[i];
+            }
+
+            return ScatterMap;
+        }
+
+        
     }
 }
 
@@ -134,4 +219,3 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
 
 
-//C:\Users\Umar\Desktop\Projects\Basic-Encryption-System
