@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Umar\\Desktop\\Projects\\Basic-Encryption-System\\c#.csproj": {}
+    "C:\\Users\\Umar\\desktop\\projects\\basic-encryption-system\\c#.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Umar\\Desktop\\Projects\\Basic-Encryption-System\\c#.csproj": {
+    "C:\\Users\\Umar\\desktop\\projects\\basic-encryption-system\\c#.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Umar\\Desktop\\Projects\\Basic-Encryption-System\\c#.csproj",
+        "projectUniqueName": "C:\\Users\\Umar\\desktop\\projects\\basic-encryption-system\\c#.csproj",
         "projectName": "c#",
-        "projectPath": "C:\\Users\\Umar\\Desktop\\Projects\\Basic-Encryption-System\\c#.csproj",
+        "projectPath": "C:\\Users\\Umar\\desktop\\projects\\basic-encryption-system\\c#.csproj",
         "packagesPath": "C:\\Users\\Umar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Umar\\Desktop\\Projects\\Basic-Encryption-System\\obj\\",
+        "outputPath": "C:\\Users\\Umar\\desktop\\projects\\basic-encryption-system\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Umar\\AppData\\Roaming\\NuGet\\NuGet.Config"

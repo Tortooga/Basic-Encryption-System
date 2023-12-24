@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace encryptionSys // Note: actual namespace depends on the project name.
@@ -11,8 +11,11 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
         static void Main(string[] args)
         {
             string input = "";
-            char[] key = new char[alpha.Length];
-            while (input != "/"){
+            char[] key = keyGen();
+            char[] encrypted = encrypt("hello this message is a test, alpha is a list containing all the possible charecters recognised by this encryption system.", key);
+            Console.WriteLine(encrypted);
+            Console.WriteLine(decrypt(encrypted, key));
+           /* while (input != "/"){
                 Console.WriteLine("For encryption input 'e'. And for decryption input 'd'");
                 input = Console.ReadLine();
                 if (input == "d"){
@@ -44,7 +47,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                         Console.WriteLine(encrypt(input,key));
                     }
                 }
-            }
+            }*/
         }
 
 
@@ -80,6 +83,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
         static char[] encrypt(string original, char[] key){
             original.ToCharArray();
+            char[] preCycleKey = key;
 
             char[] encrypted = new char[original.Length];
             for (int i = 0; i < original.Length; i++)
@@ -88,7 +92,7 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
                 key = cycle(key);
             }
 
-            return salt(encrypted, key);
+            return salt(encrypted, preCycleKey);
         }
 
         static char[] cycle(char[] inSeq){
@@ -108,8 +112,9 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
         }
 
         static char[] decrypt(char[] encrypted, char[] key){
-            
             char[] decrypted = new char[encrypted.Length];
+            encrypted = unsalt(encrypted, key);
+            Console.WriteLine(encrypted);
             for (int i = 0; i < encrypted.Length; i++)
             {
                 decrypted[i] = alpha[Array.IndexOf(key,encrypted[i])];
@@ -120,7 +125,8 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
         }
 
         static char[] salt(char[] unsalted, char[] key){
-            int[] scatterMap = scatterMapGen(unsalted.Length, key);
+            int?[] scatterMapParams = {unsalted.Length, null};
+            int[] scatterMap = scatterMapGen(scatterMapParams, key);
             char[] salted = new char[scatterMap.Length];
 
             int realValCount = 0;
@@ -137,6 +143,29 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
             return salted;
         }
+
+        static char[] unsalt(char[] salted, char[] key){
+            int?[] scatterMapParams = {null, salted.Length};
+            int[] scatterMap = scatterMapGen(scatterMapParams, key);
+            char[] tempUnsalted = new char[scatterMap.Length];
+
+            int realValCount = 0;
+            for (int i = 0; i < salted.Length; i++)
+            {
+                if (scatterMap[i] == 1){
+                    tempUnsalted[realValCount] = salted[i];
+                    realValCount++;
+                }
+            }
+
+            char[] finalUnsalted = new char[realValCount];
+            for (int i = 0; i < realValCount; i++)
+            {
+                finalUnsalted[i] = tempUnsalted[i];
+            }
+            return finalUnsalted;
+        }
+
 
         static int cycleReset(int num){
             if (num >= alpha.Length){
@@ -174,19 +203,30 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
             return binval;
         }
 
-        static int[] scatterMapGen(int UnsaltedLen, char[] key){
-            int[] ScatterMapTemp = new int[UnsaltedLen*5];
-            for (int i = 0; i < UnsaltedLen*5; i++)
-            {
-                ScatterMapTemp[i] = 2;
-            }
-
+        static int[] scatterMapGen(int?[] paramArray, char[] key){
             int realValCount = 0;
             int seedCharIndex = 0;
             int bitCount  = 0;
             int subCharBit = 0;
-            while (realValCount < UnsaltedLen){
+            int[] ScatterMapTemp;
+            bool scatterMode;
 
+            if (paramArray[0] is null){
+                ScatterMapTemp = new int[(int)paramArray[1]];
+                scatterMode = false;
+            }
+
+            else{
+                ScatterMapTemp = new int[(int)paramArray[0]*5];
+                for (int i = 0; i < ScatterMapTemp.Length; i++)
+                {
+                    ScatterMapTemp[i] = 2;
+                }
+                scatterMode = true;
+            }
+            
+            bool conditionalDummyVar = true;
+            while (conditionalDummyVar){
                 if (subCharBit >= toBin(Array.IndexOf(alpha,key[seedCharIndex])).Length){
                     seedCharIndex++;
                     subCharBit = 0;
@@ -200,6 +240,13 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
 
                 bitCount++;
                 subCharBit++;
+
+                if (scatterMode){
+                    conditionalDummyVar = realValCount < paramArray[0];
+                }
+                else{
+                    conditionalDummyVar = bitCount < paramArray[1];
+                }
             }
 
             int[] ScatterMap = new int[bitCount];
@@ -214,8 +261,3 @@ namespace encryptionSys // Note: actual namespace depends on the project name.
         
     }
 }
-
-
-
-
-
